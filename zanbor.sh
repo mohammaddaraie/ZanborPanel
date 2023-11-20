@@ -55,6 +55,19 @@ PACKAGES=(
 
 colorized_echo green " Installing the necessary packages. . ."
 
+for i in "${PACKAGES[@]}"
+    do
+        dpkg -s $i &> /dev/null
+        if [ $? -eq 0 ]; then
+            colorized_echo yellow "Package $i is currently installed on your server!"
+        else
+            apt install $i -y
+            if [ $? -ne 0 ]; then
+                colorized_echo red "Package $i could not be installed."
+                exit 1
+            fi
+        fi
+    done
 
 # install more !
 echo 'phpmyadmin phpmyadmin/app-password-confirm password zanborpanel' | debconf-set-selections
